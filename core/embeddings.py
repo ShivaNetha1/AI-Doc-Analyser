@@ -5,5 +5,10 @@ class EmbeddingModel:
         self.model = SentenceTransformer(model_name, device="cpu", trust_remote_code=True)
 
     def get_embeddings(self, texts):
-        return self.model.encode(texts)
+        return self.model.encode(
+            texts,
+            show_progress_bar=False,
+            batch_size=64,
+            convert_to_numpy=True,
+        )
 

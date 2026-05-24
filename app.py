@@ -48,40 +48,30 @@ selected_model_name = st.sidebar.selectbox("Select LLM Model", list(MODEL_OPTION
 model_id = MODEL_OPTIONS[selected_model_name]
 
 st.sidebar.title("Document Upload")
-uploaded_files = st.sidebar.file_uploader("Upload PDF or TXT", type=["pdf", "txt"], accept_multiple_files=True)
-
-# Session controls: clear chat or delete all documents + reset session
-st.sidebar.markdown("---")
-st.sidebar.title("Session Controls")
-if st.sidebar.button("Clear Chat"):
-    st.session_state.chat_history = []
-    st.sidebar.success("Chat cleared (documents retained).")
-
-if st.sidebar.button("Delete Docs"):
-    st.session_state.chat_history = []
-    st.session_state.vector_store = None
-    st.session_state.has_asked_question = False
-    st.sidebar.success("All documents and chat history deleted. Session reset.")
-    st.experimental_rerun()
+uploaded_files = st.sidebar.file_uploader("Upload PDF or TXT", type=["pdf", "txt"], accept_multiple_files=True, key="uploaded_files")
 
 if st.sidebar.button("Process Documents"):
     if uploaded_files:
-        all_chunks = []
-        all_embeddings = []
-        
-        for file in uploaded_files:
-            if file.name.endswith(".pdf"):
-                text = load_pdf(file)
-            else:
-                text = load_text(file)
-            
-            chunks = chunk_text(text)
-            embeddings = st.session_state.embedding_model.get_embeddings(chunks)
-            
-            if st.session_state.vector_store is None:
-                st.session_state.vector_store = VectorStore(len(embeddings[0]))
-            
-            st.session_state.vector_store.add_texts(chunks, embeddings, file.name)
+        with st.spinner("Processing documents... this may take a minute for large files"):
+            total_files = len(uploaded_files)
+            for idx, file in enumerate(uploaded_files, start=1):
+                st.sidebar.info(f"Processing {file.name} ({idx}/{total_files})")
+                if file.name.endswith(".pdf"):
+                    text = load_pdf(file)
+                else:
+                    text = load_text(file)
+
+                chunks = [chunk for chunk in chunk_text(text) if chunk.strip()]
+                if len(chunks) > 500:
+                    st.sidebar.warning(
+                        "Large document detected — indexing may take several minutes."
+                    )
+                embeddings = st.session_state.embedding_model.get_embeddings(chunks)
+
+                if st.session_state.vector_store is None:
+                    st.session_state.vector_store = VectorStore(len(embeddings[0]))
+
+                st.session_state.vector_store.add_texts(chunks, embeddings, file.name)
         st.sidebar.success("Documents processed!")
 
 st.title("AI Document Assistant")
@@ -100,7 +90,15 @@ for message in st.session_state.chat_history:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-if prompt := st.chat_input("Ask something about your documents..."):
+chat_col, action_col = st.columns([5, 1])
+with action_col:
+    if st.button("Clear Chat"):
+        st.session_state.chat_history = []
+
+with chat_col:
+    prompt = st.chat_input("Ask something about your documents...")
+
+if prompt:
     if prompt.lower() in ["exit", "quit"]:
         st.session_state.chat_history = []
         st.session_state.vector_store = None
