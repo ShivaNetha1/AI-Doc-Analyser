@@ -1,14 +1,15 @@
 Q1: What approach did you take to build this and why?
-A1: I took a modular approach by breaking the project into separate parts like Agents, Core Logic, and Utilities. I did this to make the code organized and easy to fix. I used Groq for the AI because it is very fast, and I used local embeddings so that the document data stays private and searches are quick.
+A1: I took a modular approach by breaking the project into separate parts like Agents, Core Logic, and Utilities i did this to make the code organized and easy to fix. i used Groq for the AI because it is very fast, and i used local embeddings so that the document data stays private and searches are quick.
 
 Q2: How did you implement the agent behavior — how does it decide what action to take?
-A2: I built a "Router Agent" which acts as the brain of the system. Every time a user asks something, this agent first analyzes the intent. It decides if the question needs a document search, a math calculation, or if it should be rejected. It uses a specific set of instructions to classify the query before any other step happens.
+A2: I built a Router Agent which acts as the brain of the system. every time a user asks something, this agent first analyzes the intent. it decides if the question needs a document search, a math calculation, or if it should be rejected. it uses a specific set of instructions to classify the query before any other step happens.
 
 Q3: How did you make sure the assistant only answers from the documents and does not make things up?
-A3: I used a three-step guardrail system. First, the AI is strictly told in its prompt to only use the provided text. Second, it only sees small pieces of the uploaded documents. Third, I added a "Validator Agent" that compares the final answer with the document text. If the answer is not supported by the document, the system refuses to show it.
+A3: I used a three-step guardrail system first the AI is strictly told in its prompt to only use the provided text second it only sees small pieces of the uploaded documents third i added a Validator Agent that compares the final answer with the document text. If the answer is not supported by the document, the system refuses to show it.
 
 Q4: How did you handle the conversation memory?
-A4: I used a "Memory Manager" that saves the chat history in the session. When a user asks a follow-up question like "What about him?", the memory manager takes the previous messages and re-writes the question to include the context. This makes the assistant understand who or what the user is talking about even in short questions.
+A4: I used a Memory Manager that saves the chat history in the session. When a user asks a follow-up question like "What about him?", the memory manager takes the previous messages and re-writes the question to include the context. This makes the assistant understand who or what the user is talking about even in short questions.
 
 Q5: What was the most difficult part and how did you solve it?
-A5: The hardest part was stopping the AI from "hallucinating" or using its own general knowledge. I solved this by creating a double-check workflow. By using a separate Validator Agent to verify the response against the retrieved document chunks, I ensured that every answer is 100% grounded in the files you uploaded.
+A5: The hardest part was stopping the AI from "hallucinating" or using its own general knowledge. I solved this by creating a double-check workflow. By using a separate Validator Agent to verify the response against the retrieved document chunks, I ensured that every answer is 100% grounded in the files you uploaded and this was ensured by n number of testings before final conclution
+

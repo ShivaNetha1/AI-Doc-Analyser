@@ -86,17 +86,21 @@ if not st.session_state.has_asked_question:
         "5. Use follow-up questions to narrow the results or verify details.\n\n"
     )
 
+# Display chat history
 for message in st.session_state.chat_history:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-chat_col, action_col = st.columns([5, 1])
-with action_col:
-    if st.button("Clear Chat"):
-        st.session_state.chat_history = []
+# Keep input box at bottom with columns layout
+chat_col, clear_col = st.columns([6, 1])
 
 with chat_col:
     prompt = st.chat_input("Ask something about your documents...")
+
+with clear_col:
+    if st.button("Clear Chat", use_container_width=True):
+        st.session_state.chat_history = []
+        st.rerun()
 
 if prompt:
     if prompt.lower() in ["exit", "quit"]:
