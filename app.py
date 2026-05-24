@@ -50,6 +50,20 @@ model_id = MODEL_OPTIONS[selected_model_name]
 st.sidebar.title("Document Upload")
 uploaded_files = st.sidebar.file_uploader("Upload PDF or TXT", type=["pdf", "txt"], accept_multiple_files=True)
 
+# Session controls: clear chat or delete all documents + reset session
+st.sidebar.markdown("---")
+st.sidebar.title("Session Controls")
+if st.sidebar.button("Clear Chat"):
+    st.session_state.chat_history = []
+    st.sidebar.success("Chat cleared (documents retained).")
+
+if st.sidebar.button("Delete Docs"):
+    st.session_state.chat_history = []
+    st.session_state.vector_store = None
+    st.session_state.has_asked_question = False
+    st.sidebar.success("All documents and chat history deleted. Session reset.")
+    st.experimental_rerun()
+
 if st.sidebar.button("Process Documents"):
     if uploaded_files:
         all_chunks = []
