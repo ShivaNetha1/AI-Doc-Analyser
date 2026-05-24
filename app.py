@@ -25,6 +25,17 @@ load_dotenv()
 
 st.set_page_config(page_title="AI Document Assistant", layout="wide")
 
+st.markdown(
+    """
+    <style>
+    .main .block-container {
+        padding-bottom: 7rem;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 if "vector_store" not in st.session_state:
@@ -49,6 +60,11 @@ model_id = MODEL_OPTIONS[selected_model_name]
 
 st.sidebar.title("Document Upload")
 uploaded_files = st.sidebar.file_uploader("Upload PDF or TXT", type=["pdf", "txt"], accept_multiple_files=True, key="uploaded_files")
+
+if st.sidebar.button("Clear Chat", use_container_width=True):
+    st.session_state.chat_history = []
+    st.session_state.has_asked_question = False
+    st.rerun()
 
 if st.sidebar.button("Process Documents"):
     if uploaded_files:
@@ -91,16 +107,7 @@ for message in st.session_state.chat_history:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# Keep input box at bottom with columns layout
-chat_col, clear_col = st.columns([6, 1])
-
-with chat_col:
-    prompt = st.chat_input("Ask something about your documents...")
-
-with clear_col:
-    if st.button("Clear Chat", use_container_width=True):
-        st.session_state.chat_history = []
-        st.rerun()
+prompt = st.chat_input("Ask something about your documents...")
 
 if prompt:
     if prompt.lower() in ["exit", "quit"]:
@@ -115,7 +122,9 @@ if prompt:
         st.markdown(prompt)
 
     if st.session_state.vector_store is None:
-        st.error("Please upload and process documents first.")
+        answer = "Please upload and process documents first."
+        st.session_state.chat_history.append({"role": "assistant", "content": answer})
+        st.rerun()
     else:
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
@@ -144,3 +153,4 @@ if prompt:
 
                 st.markdown(answer)
                 st.session_state.chat_history.append({"role": "assistant", "content": answer})
+                st.rerun()
