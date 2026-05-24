@@ -31,6 +31,8 @@ if "vector_store" not in st.session_state:
     st.session_state.vector_store = None
 if "embedding_model" not in st.session_state:
     st.session_state.embedding_model = EmbeddingModel()
+if "has_asked_question" not in st.session_state:
+    st.session_state.has_asked_question = False
 
 api_key = os.getenv("GROQ_API_KEY")
 
@@ -70,6 +72,16 @@ if st.sidebar.button("Process Documents"):
 
 st.title("AI Document Assistant")
 
+if not st.session_state.has_asked_question:
+    st.info(
+        "**How to use this platform**\n\n"
+        "1. Upload one or more PDF/TXT files in the sidebar.\n"
+        "2. Click **Process Documents** to build the document index.\n"
+        "3. Ask any question in the chat box below.\n"
+        "4. The assistant will reply with answers from your uploaded documents.\n"
+        "5. Use follow-up questions to narrow the results or verify details.\n\n"
+    )
+
 for message in st.session_state.chat_history:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
@@ -78,8 +90,10 @@ if prompt := st.chat_input("Ask something about your documents..."):
     if prompt.lower() in ["exit", "quit"]:
         st.session_state.chat_history = []
         st.session_state.vector_store = None
+        st.session_state.has_asked_question = False
         st.rerun()
     
+    st.session_state.has_asked_question = True
     st.session_state.chat_history.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
