@@ -1,8 +1,8 @@
-streamlit==1.45.1
+streamlit
 groq
 sentence-transformers==2.7.0
-faiss-cpu==1.11.0
+faiss-cpu
 PyPDF2
 python-dotenv
 numpy<2.0.0
-torch==2.6.0
+torch
