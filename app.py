@@ -65,6 +65,10 @@ MODEL_OPTIONS = {
     "OpenAI GPT-OSS 20B": "openai/gpt-oss-20b"
 }
 
+st.sidebar.info(
+    "⚠️ **Clear cache before switching models**\n"
+    "To avoid unexpected results, clear the chat history or restart the app when changing the selected model."
+)
 st.sidebar.title("Model Settings")
 selected_model_name = st.sidebar.selectbox("Select LLM Model", list(MODEL_OPTIONS.keys()))
 model_id = MODEL_OPTIONS[selected_model_name]
