@@ -59,10 +59,9 @@ api_key = os.getenv("GROQ_API_KEY")
 
 # ── Sidebar — Model Settings only ─────────────────────────────
 MODEL_OPTIONS = {
-    "Llama 3.3 70B Versatile": "llama-3.3-70b-versatile",
-    "Llama 3.1 8B Instant": "llama-3.1-8b-instant",
     "GPT OSS 120B": "openai/gpt-oss-120b",
-    "OpenAI GPT-OSS 20B": "openai/gpt-oss-20b"
+    "OpenAI GPT-OSS 20B": "openai/gpt-oss-20b",
+    "Qwen 3.8 27B": "qwen/qwen3.8-27b"
 }
 
 st.sidebar.info(
