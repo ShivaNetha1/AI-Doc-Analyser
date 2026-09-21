@@ -25,7 +25,10 @@ Context:
 Question: {question}
 Answer:"""
 
-VALIDATOR_PROMPT = """Compare the AI's answer with the retrieved context.
-If the answer is supported by the context, respond "VALID".
-If the answer contains information not in the context or is a hallucination, respond "INVALID".
-Only respond with VALID or INVALID."""
+    VALIDATOR_PROMPT = """Compare the AI's answer with the retrieved context.
+    If the answer is supported by the context, respond "VALID".
+    If the answer contains information not in the context or is a hallucination, respond "INVALID".
+    Only respond with VALID or INVALID."""
+
+
+

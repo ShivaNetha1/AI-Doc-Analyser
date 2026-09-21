@@ -185,9 +185,10 @@ if prompt:
                         answer = agent.generate_answer(standalone_query, context)
 
                     validator = ValidatorAgent(api_key, model_id)
-                    if not validator.validate(answer, context):
+                    if not validator.validate(answer, context,standalone_query):
                         answer = "I could not find this information in the provided documents"
 
                 st.markdown(answer)
                 st.session_state.chat_history.append({"role": "assistant", "content": answer})
                 st.rerun()
+
